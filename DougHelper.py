@@ -76,10 +76,10 @@ def rename_files_in_series(series_path):
         old_mp4_path = os.path.join(series_path, mp4_filename)
         old_jpg_path = os.path.join(series_path, jpg_filename)
 
-        new_mp4_name = f"{base_title} - Episode {next_episode}.mp4"
+        new_mp4_name = f"{base_title} {next_episode}.mp4"
         new_mp4_path_in_processed = os.path.join(processed_folder_path, new_mp4_name)
 
-        new_jpg_name = f"{base_title} - Episode {next_episode}.jpg"
+        new_jpg_name = f"{base_title} {next_episode}.jpg"
         new_jpg_path_in_processed = os.path.join(processed_folder_path, new_jpg_name)
 
         try:
