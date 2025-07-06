@@ -98,11 +98,11 @@ For each `Series_Name` folder, the script performs the following steps:
 │   ├── Dungeon Runs/
 │   │   ├── index.txt (content: title: ESO Dungeon Runs)
 │   │   ├── 2025-07-05 10-30-00.mp4
-│   │   ├── 2025-07-05 10-30-00 (1).jpg
+│   │   ├── eso_thumbnail (1).jpg
 │   │   ├── 2025-07-05 11-00-00.mp4
-│   │   ├── 2025-07-05 11-00-00 (2).jpg
+│   │   ├── eso_thumbnail (2).jpg
 │   │   ├── 2025-07-05 11-30-00.mp4
-│   │   └── 2025-07-05 11-30-00 (3).jpg
+│   │   └── eso_thumbnail (3).jpg
 │   └── Quests/
 │       ├── index.txt (content: title: ESO Quests)
 │       └── ...
