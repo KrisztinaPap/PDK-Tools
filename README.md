@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Python script is designed to automate the tedious process of renaming video recordings (.mp4) and their corresponding thumbnail images (.jpg) for content series. It was specifically developed for a content creator who faced the daily challenge of manually renaming a dozen or more files, a time-consuming task that significantly impacted their workflow.
+This Python script is designed to automate the tedious process of renaming video recordings (.mp4) and their corresponding thumbnail images (.jpeg) for content series. It was specifically developed for a content creator who faced the daily challenge of manually renaming a dozen or more files, a time-consuming task that significantly impacted their workflow.
 
 **This script marks the crucial first step in automating the content creator's entire post-recording workflow.** Due to limited free time, this project is being developed in manageable chunks, focusing initially on solving the most pressing bottleneck: file organization and consistent naming.
 
@@ -10,13 +10,13 @@ By leveraging a structured folder system and an `index.txt` file, this script in
 
 ## The Problem It Solves
 
-Imagine recording 8 hour streams, as 30-minute clips, 5 days a week. That's 8 x 2 x 5 = 80 clips per week. Each file comes with a generic, date-based filename (e.g., `2025-07-05 18-00-00.mp4`, `Screenshot (1).jpg`). You also generate a thumbnail with the unique episode number for each clip. Updating the one number is fairly quick, but you still need to rename each thumbnail file either when saving, or afterwards. Manually renaming all these files to `[Series Title] [Episode Number].mp4` and `[Series Title] [Episode Number].jpg` is incredibly repetitive and prone to errors. This script eliminates that manual effort, freeing up valuable time for content creation.
+Imagine recording 8 hour streams, as 30-minute clips, 5 days a week. That's 8 x 2 x 5 = 80 clips per week. Each file comes with a generic, date-based filename (e.g., `2025-07-05 18-00-00.mp4`, `Screenshot (1).jpeg`). You also generate a thumbnail with the unique episode number for each clip. Updating the one number is fairly quick, but you still need to rename each thumbnail file either when saving, or afterwards. Manually renaming all these files to `[Series Title] [Episode Number].mp4` and `[Series Title] [Episode Number].jpeg` is incredibly repetitive and prone to errors. This script eliminates that manual effort, freeing up valuable time for content creation.
 
 ## Features
 
-* **Automated Renaming:** Renames `.mp4` video files and `.jpg` thumbnail files based on a series title and sequential episode numbers.
+* **Automated Renaming:** Renames `.mp4` video files and `.jpeg` thumbnail files based on a series title and sequential episode numbers.
 * **Intelligent Episode Numbering:** Automatically determines the next available episode number by scanning already processed files.
-* **Thumbnail Sequence Correction:** Handles common naming patterns for thumbnails (e.g., `Screenshot.jpg`, `Screenshot (1).jpg`, `Screenshot (10).jpg`) to ensure they are processed and renamed in the correct numerical order.
+* **Thumbnail Sequence Correction:** Handles common naming patterns for thumbnails (e.g., `Screenshot.jpeg`, `Screenshot (1).jpeg`, `Screenshot (10).jpeg`) to ensure they are processed and renamed in the correct numerical order.
 * **Structured Folder Management:** Creates a `Processed` subdirectory within each series folder to move and store the newly renamed files, keeping your original recording directory clean.
 * **Hierarchical Scanning:** Scans through a root directory, then game-specific subdirectories, and finally series-specific subdirectories to find content to process.
 * **`index.txt` Driven:** Uses a simple `index.txt` file within each series folder to retrieve the series title.
@@ -31,9 +31,9 @@ The script operates by looking for a specific directory structure:
 │   ├── Series_Name_A/
 │   │   ├── index.txt
 │   │   ├── Your_Video_File_1.mp4
-│   │   ├── Your_Thumbnail_1.jpg
+│   │   ├── Your_Thumbnail_1.jpeg
 │   │   └── Your_Video_File_2.mp4
-│   │   └── Your_Thumbnail_2.jpg
+│   │   └── Your_Thumbnail_2.jpeg
 │   └── Series_Name_B/
 │       ├── index.txt
 │       └── ...
@@ -47,10 +47,10 @@ The script operates by looking for a specific directory structure:
 For each `Series_Name` folder, the script performs the following steps:
 
 1.  **Reads Series Title:** It looks for an `index.txt` file inside the series folder. This file must contain a line like `title: Your Series Title`.
-2.  **Determines Next Episode Number:** It checks for a `Processed` subfolder. If found, it scans existing `.mp4` and `.jpg` files within `Processed` to find the highest episode number used, then increments it for the new files.
-3.  **Identifies Files to Process:** It scans the current series folder for `.mp4` video files (matching a typical datetime pattern) and `.jpg` thumbnail files (matching a generic pattern, including those with `(number)` suffixes).
-4.  **Sorts Files Correctly:** Crucially, it uses a custom sorting logic to ensure that thumbnails like `Screenshot.jpg`, `Screenshot (1).jpg`, `Screenshot (2).jpg`, and `Screenshot (10).jpg` are sorted numerically (0, 1, 2, 10) rather than alphabetically.
-5.  **Renames and Moves:** For each matching pair of `.mp4` and `.jpg` files, it renames them to `[Series Title] [Next Episode Number].mp4` and `[Series Title] [Next Episode Number].jpg` respectively, and then moves them into the `Processed` folder.
+2.  **Determines Next Episode Number:** It checks for a `Processed` subfolder. If found, it scans existing `.mp4` and `.jpeg` files within `Processed` to find the highest episode number used, then increments it for the new files.
+3.  **Identifies Files to Process:** It scans the current series folder for `.mp4` video files (matching a typical datetime pattern) and `.jpeg` thumbnail files (matching a generic pattern, including those with `(number)` suffixes).
+4.  **Sorts Files Correctly:** Crucially, it uses a custom sorting logic to ensure that thumbnails like `Screenshot.jpeg`, `Screenshot (1).jpeg`, `Screenshot (2).jpeg`, and `Screenshot (10).jpeg` are sorted numerically (0, 1, 2, 10) rather than alphabetically.
+5.  **Renames and Moves:** For each matching pair of `.mp4` and `.jpeg` files, it renames them to `[Series Title] [Next Episode Number].mp4` and `[Series Title] [Next Episode Number].jpeg` respectively, and then moves them into the `Processed` folder.
 
 ## Setup and Usage
 
@@ -98,11 +98,11 @@ For each `Series_Name` folder, the script performs the following steps:
 │   ├── Dungeon Runs/
 │   │   ├── index.txt (content: title: ESO Dungeon Runs)
 │   │   ├── 2025-07-05 10-30-00.mp4
-│   │   ├── eso_thumbnail (1).jpg
+│   │   ├── eso_thumbnail (1).jpeg
 │   │   ├── 2025-07-05 11-00-00.mp4
-│   │   ├── eso_thumbnail (2).jpg
+│   │   ├── eso_thumbnail (2).jpeg
 │   │   ├── 2025-07-05 11-30-00.mp4
-│   │   └── eso_thumbnail (3).jpg
+│   │   └── eso_thumbnail (3).jpeg
 │   └── Quests/
 │       ├── index.txt (content: title: ESO Quests)
 │       └── ...
@@ -119,11 +119,11 @@ For each `Series_Name` folder, the script performs the following steps:
 │   │   ├── index.txt
 │   │   └── Processed/
 │   │       ├── ESO Dungeon Runs 1.mp4
-│   │       ├── ESO Dungeon Runs 1.jpg
+│   │       ├── ESO Dungeon Runs 1.jpeg
 │   │       ├── ESO Dungeon Runs 2.mp4
-│   │       ├── ESO Dungeon Runs 2.jpg
+│   │       ├── ESO Dungeon Runs 2.jpeg
 │   │       ├── ESO Dungeon Runs 3.mp4
-│   │       └── ESO Dungeon Runs 3.jpg
+│   │       └── ESO Dungeon Runs 3.jpeg
 │   └── Quests/
 │       ├── index.txt
 │       └── ...

@@ -12,7 +12,7 @@ from rename_files import (
     rename_files_in_series,
     main,
     DATETIME_FILENAME_PATTERN,
-    GENERIC_JPG_PATTERN,
+    GENERIC_jpeg_PATTERN,
     TITLE_LINE_PATTERN,
     EPISODE_NUMBER_PATTERN,
     THUMBNAIL_NUMBER_PATTERN
@@ -43,12 +43,12 @@ class TestRenamingScript(unittest.TestCase):
 
     def test_numeric_sort_key(self):
         """Test the custom numeric sorting key."""
-        self.assertEqual(_numeric_sort_key("file.jpg"), 0)
-        self.assertEqual(_numeric_sort_key("file (1).jpg"), 1)
-        self.assertEqual(_numeric_sort_key("file (9).jpg"), 9)
-        self.assertEqual(_numeric_sort_key("file (10).jpg"), 10)
-        self.assertEqual(_numeric_sort_key("another file (100).jpg"), 100)
-        self.assertEqual(_numeric_sort_key("video.mp4"), 0) # Should not match JPG pattern, so default to 0
+        self.assertEqual(_numeric_sort_key("file.jpeg"), 0)
+        self.assertEqual(_numeric_sort_key("file (1).jpeg"), 1)
+        self.assertEqual(_numeric_sort_key("file (9).jpeg"), 9)
+        self.assertEqual(_numeric_sort_key("file (10).jpeg"), 10)
+        self.assertEqual(_numeric_sort_key("another file (100).jpeg"), 100)
+        self.assertEqual(_numeric_sort_key("video.mp4"), 0) # Should not match jpeg pattern, so default to 0
 
     # --- Test Cases for get_series_title ---
 
@@ -111,7 +111,7 @@ class TestRenamingScript(unittest.TestCase):
         os.makedirs(processed_path, exist_ok=True)
         # Create some dummy processed files
         open(os.path.join(processed_path, "My Series 1.mp4"), 'a').close()
-        open(os.path.join(processed_path, "My Series 5.jpg"), 'a').close() # Max episode is 5
+        open(os.path.join(processed_path, "My Series 5.jpeg"), 'a').close() # Max episode is 5
         open(os.path.join(processed_path, "My Series 3.mp4"), 'a').close()
         self.assertEqual(get_next_episode_number(series_path), 6)
 
@@ -136,26 +136,26 @@ class TestRenamingScript(unittest.TestCase):
 
         # Create dummy files
         open(os.path.join(series_path, "2025-01-01 10-00-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Screenshot.jpg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot.jpeg"), 'a').close()
         open(os.path.join(series_path, "2025-01-01 10-30-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Screenshot (1).jpg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot (1).jpeg"), 'a').close()
         open(os.path.join(series_path, "2025-01-01 11-00-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Screenshot (2).jpg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot (2).jpeg"), 'a').close()
 
         rename_files_in_series(series_path)
 
         processed_path = os.path.join(series_path, "Processed")
         self.assertTrue(os.path.exists(processed_path))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 1.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 1.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 1.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 2.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 2.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 2.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 3.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 3.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 3.jpeg")))
 
         # Check original files are gone
         self.assertFalse(os.path.exists(os.path.join(series_path, "2025-01-01 10-00-00.mp4")))
-        self.assertFalse(os.path.exists(os.path.join(series_path, "Screenshot.jpg")))
+        self.assertFalse(os.path.exists(os.path.join(series_path, "Screenshot.jpeg")))
 
     def test_rename_files_in_series_existing_processed_files(self):
         """Test renaming when episodes already exist in Processed."""
@@ -169,33 +169,33 @@ class TestRenamingScript(unittest.TestCase):
 
         # Existing processed files
         open(os.path.join(processed_path, "Old Journey 1.mp4"), 'a').close()
-        open(os.path.join(processed_path, "Old Journey 1.jpg"), 'a').close()
+        open(os.path.join(processed_path, "Old Journey 1.jpeg"), 'a').close()
         open(os.path.join(processed_path, "Old Journey 2.mp4"), 'a').close()
-        open(os.path.join(processed_path, "Old Journey 2.jpg"), 'a').close()
+        open(os.path.join(processed_path, "Old Journey 2.jpeg"), 'a').close()
 
         # New files to process
         open(os.path.join(series_path, "2025-02-01 09-00-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Thumb (0).jpg"), 'a').close() # Treat as 0 for sorting
+        open(os.path.join(series_path, "Thumb (0).jpeg"), 'a').close() # Treat as 0 for sorting
         open(os.path.join(series_path, "2025-02-01 09-30-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Thumb (1).jpg"), 'a').close()
+        open(os.path.join(series_path, "Thumb (1).jpeg"), 'a').close()
 
         rename_files_in_series(series_path)
 
         self.assertTrue(os.path.exists(os.path.join(processed_path, "Old Journey 3.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "Old Journey 3.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "Old Journey 3.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "Old Journey 4.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "Old Journey 4.jpg")))
-        self.assertEqual(len(os.listdir(processed_path)), 8) # 4 mp4s, 4 jpgs
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "Old Journey 4.jpeg")))
+        self.assertEqual(len(os.listdir(processed_path)), 8) # 4 mp4s, 4 jpegs
 
     def test_rename_files_in_series_mismatched_file_counts(self):
-        """Test when MP4 and JPG file counts don't match."""
+        """Test when MP4 and jpeg file counts don't match."""
         series_path = os.path.join(self.test_root, "Game Z", "Mismatch")
         os.makedirs(series_path, exist_ok=True)
         with open(os.path.join(series_path, "index.txt"), "w") as f:
             f.write("title: Mismatched\n")
 
         open(os.path.join(series_path, "2025-03-01 10-00-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Screenshot (1).jpg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot (1).jpeg"), 'a').close()
         open(os.path.join(series_path, "2025-03-01 10-30-00.mp4"), 'a').close() # One more MP4
 
         rename_files_in_series(series_path)
@@ -204,10 +204,10 @@ class TestRenamingScript(unittest.TestCase):
         self.assertFalse(os.path.exists(os.path.join(series_path, "Processed")))
         self.assertTrue(os.path.exists(os.path.join(series_path, "2025-03-01 10-00-00.mp4")))
         self.assertTrue(os.path.exists(os.path.join(series_path, "2025-03-01 10-30-00.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(series_path, "Screenshot (1).jpg")))
+        self.assertTrue(os.path.exists(os.path.join(series_path, "Screenshot (1).jpeg")))
 
     def test_rename_files_in_series_no_files_to_process(self):
-        """Test when no MP4 or JPG files are found."""
+        """Test when no MP4 or jpeg files are found."""
         series_path = os.path.join(self.test_root, "Game A", "Empty Series")
         os.makedirs(series_path, exist_ok=True)
         with open(os.path.join(series_path, "index.txt"), "w") as f:
@@ -226,7 +226,7 @@ class TestRenamingScript(unittest.TestCase):
         # Don't create index.txt
 
         open(os.path.join(series_path, "2025-04-01 10-00-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Screenshot (1).jpg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot (1).jpeg"), 'a').close()
 
         rename_files_in_series(series_path)
 
@@ -248,11 +248,11 @@ class TestRenamingScript(unittest.TestCase):
         open(os.path.join(series_path, "2025-05-01 11-30-00.mp4"), 'a').close()
         open(os.path.join(series_path, "2025-05-01 12-00-00.mp4"), 'a').close()
 
-        open(os.path.join(series_path, "Screenshot (10).jpg"), 'a').close() # This comes before (2) alphabetically
-        open(os.path.join(series_path, "Screenshot (2).jpg"), 'a').close()
-        open(os.path.join(series_path, "Screenshot (1).jpg"), 'a').close()
-        open(os.path.join(series_path, "Screenshot (3).jpg"), 'a').close()
-        open(os.path.join(series_path, "Screenshot.jpg"), 'a').close() # This comes first (0)
+        open(os.path.join(series_path, "Screenshot (10).jpeg"), 'a').close() # This comes before (2) alphabetically
+        open(os.path.join(series_path, "Screenshot (2).jpeg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot (1).jpeg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot (3).jpeg"), 'a').close()
+        open(os.path.join(series_path, "Screenshot.jpeg"), 'a').close() # This comes first (0)
 
         rename_files_in_series(series_path)
 
@@ -261,15 +261,15 @@ class TestRenamingScript(unittest.TestCase):
 
         # Check that files were renamed in the correct episode order
         self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 1.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 1.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 1.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 2.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 2.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 2.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 3.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 3.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 3.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 4.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 4.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 4.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 5.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 5.jpg")))
+        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 5.jpeg")))
 
 
     # --- Test Cases for main function ---

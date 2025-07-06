@@ -2,15 +2,15 @@ import os
 import re
 
 DATETIME_FILENAME_PATTERN = re.compile(r".+\.mp4$", re.IGNORECASE)
-GENERIC_JPG_PATTERN = re.compile(r".+\.jpg$", re.IGNORECASE)
+GENERIC_jpeg_PATTERN = re.compile(r".+\.jpeg$", re.IGNORECASE)
 TITLE_LINE_PATTERN = re.compile(r"^title:\s*(.+)$", re.IGNORECASE)
-EPISODE_NUMBER_PATTERN = re.compile(r"(\d+)\.(mp4|jpg)$", re.IGNORECASE)
-THUMBNAIL_NUMBER_PATTERN = re.compile(r".*\((\d+)\)\.jpg$", re.IGNORECASE)
+EPISODE_NUMBER_PATTERN = re.compile(r"(\d+)\.(mp4|jpeg)$", re.IGNORECASE)
+THUMBNAIL_NUMBER_PATTERN = re.compile(r".*\((\d+)\)\.jpeg$", re.IGNORECASE)
 
 
 def _numeric_sort_key(filename):
     """
-    Custom key for sorting filenames with parenthetical numbers (e.g., 'file (1).jpg', 'file (10).jpg').
+    Custom key for sorting filenames with parenthetical numbers (e.g., 'file (1).jpeg', 'file (10).jpeg').
     Files without a number in parentheses are treated as '0' for sorting.
     """
     match = THUMBNAIL_NUMBER_PATTERN.match(filename)
@@ -45,7 +45,7 @@ def get_next_episode_number(series_path):
     if os.path.exists(processed_path):
         print(f"DEBUG: 'Processed' folder exists at {processed_path}. Checking for existing episodes.")
         for filename in os.listdir(processed_path):
-            match = re.search(r"(\d+)\.(mp4|jpg)$", filename, re.IGNORECASE)
+            match = re.search(r"(\d+)\.(mp4|jpeg)$", filename, re.IGNORECASE)
             if match:
                 episode = int(match.group(1))
                 max_episode = max(max_episode, episode)
@@ -81,8 +81,8 @@ def rename_files_in_series(series_path):
     # --- END OF MOVED BLOCK COMMENT ---
 
     mp4_files_to_process = []
-    jpg_files_to_process = []
-    print(f"DEBUG: Scanning files in {series_path} for MP4 and JPG files.")
+    jpeg_files_to_process = []
+    print(f"DEBUG: Scanning files in {series_path} for MP4 and jpeg files.")
     for filename in os.listdir(series_path):
         full_path = os.path.join(series_path, filename)
 
@@ -90,17 +90,17 @@ def rename_files_in_series(series_path):
             if DATETIME_FILENAME_PATTERN.match(filename):
                 mp4_files_to_process.append(filename)
                 print(f"DEBUG: Found MP4 file to process: {filename}")
-            elif GENERIC_JPG_PATTERN.match(filename):
-                jpg_files_to_process.append(filename)
-                print(f"DEBUG: Found JPG file to process: {filename}")
+            elif GENERIC_jpeg_PATTERN.match(filename):
+                jpeg_files_to_process.append(filename)
+                print(f"DEBUG: Found jpeg file to process: {filename}")
 
-    print(f"DEBUG: Found {len(mp4_files_to_process)} MP4 files and {len(jpg_files_to_process)} JPG files.")
+    print(f"DEBUG: Found {len(mp4_files_to_process)} MP4 files and {len(jpeg_files_to_process)} jpeg files.")
 
-    if not mp4_files_to_process and not jpg_files_to_process:
-        print(f"DEBUG: No MP4 or JPG files found to process in {series_path}. Skipping.")
+    if not mp4_files_to_process and not jpeg_files_to_process:
+        print(f"DEBUG: No MP4 or jpeg files found to process in {series_path}. Skipping.")
         return
-    elif len(mp4_files_to_process) != len(jpg_files_to_process):
-        print(f"DEBUG: Mismatch in number of MP4 ({len(mp4_files_to_process)}) and JPG ({len(jpg_files_to_process)}) files. Skipping series {series_path}.")
+    elif len(mp4_files_to_process) != len(jpeg_files_to_process):
+        print(f"DEBUG: Mismatch in number of MP4 ({len(mp4_files_to_process)}) and jpeg ({len(jpeg_files_to_process)}) files. Skipping series {series_path}.")
         return
 
     # --- NEW, CORRECT LOCATION FOR PROCESSED FOLDER CREATION ---
@@ -121,9 +121,9 @@ def rename_files_in_series(series_path):
         print(f"DEBUG: Processed folder already exists: {processed_folder_path}")
     # --- END NEW LOCATION ---
 
-    # Apply custom sorting for both MP4 and JPG files
+    # Apply custom sorting for both MP4 and jpeg files
     mp4_files_to_process.sort(key=_numeric_sort_key)
-    jpg_files_to_process.sort(key=_numeric_sort_key)
+    jpeg_files_to_process.sort(key=_numeric_sort_key)
     print("DEBUG: Files sorted using custom numeric key for correct sequence.")
 
     next_episode = get_next_episode_number(series_path)
@@ -132,16 +132,16 @@ def rename_files_in_series(series_path):
 
     for i in range(len(mp4_files_to_process)):
         mp4_filename = mp4_files_to_process[i]
-        jpg_filename = jpg_files_to_process[i]
+        jpeg_filename = jpeg_files_to_process[i]
 
         old_mp4_path = os.path.join(series_path, mp4_filename)
-        old_jpg_path = os.path.join(series_path, jpg_filename)
+        old_jpeg_path = os.path.join(series_path, jpeg_filename)
 
         new_mp4_name = f"{base_title} {next_episode}.mp4"
         new_mp4_path_in_processed = os.path.join(processed_folder_path, new_mp4_name)
 
-        new_jpg_name = f"{base_title} {next_episode}.jpg"
-        new_jpg_path_in_processed = os.path.join(processed_folder_path, new_jpg_name)
+        new_jpeg_name = f"{base_title} {next_episode}.jpeg"
+        new_jpeg_path_in_processed = os.path.join(processed_folder_path, new_jpeg_name)
 
         print(f"DEBUG: Processing pair {i+1}/{len(mp4_files_to_process)}:")
         print(f"DEBUG: Renaming '{mp4_filename}' to '{new_mp4_name}'")
@@ -152,12 +152,12 @@ def rename_files_in_series(series_path):
             print(f"DEBUG: Failed to rename MP4 '{old_mp4_path}' to '{new_mp4_path_in_processed}': {e}. Skipping this pair.")
             continue
 
-        print(f"DEBUG: Renaming '{jpg_filename}' to '{new_jpg_name}'")
+        print(f"DEBUG: Renaming '{jpeg_filename}' to '{new_jpeg_name}'")
         try:
-            os.rename(old_jpg_path, new_jpg_path_in_processed)
-            print(f"DEBUG: Successfully renamed JPG: '{old_jpg_path}' to '{new_jpg_path_in_processed}'")
+            os.rename(old_jpeg_path, new_jpeg_path_in_processed)
+            print(f"DEBUG: Successfully renamed jpeg: '{old_jpeg_path}' to '{new_jpeg_path_in_processed}'")
         except OSError as e:
-            print(f"DEBUG: Failed to rename JPG '{old_jpg_path}' to '{new_jpg_path_in_processed}': {e}. Skipping this pair.")
+            print(f"DEBUG: Failed to rename jpeg '{old_jpeg_path}' to '{new_jpeg_path_in_processed}': {e}. Skipping this pair.")
             continue
 
         next_episode += 1
