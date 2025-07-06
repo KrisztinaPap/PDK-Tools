@@ -1,4 +1,4 @@
-# Content Series Renamer
+# RenameFiles - Content Series Renamer
 
 ## Overview
 
