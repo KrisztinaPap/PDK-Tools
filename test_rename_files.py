@@ -2,17 +2,16 @@ import unittest
 import os
 import shutil
 from unittest.mock import patch, mock_open
+from datetime import datetime
 
-# Import functions from your main script
-# Assuming your main script is named 'rename_files.py'
 from rename_files import (
     _numeric_sort_key,
     get_series_title,
     get_next_episode_number,
     rename_files_in_series,
     main,
-    DATETIME_FILENAME_PATTERN,
-    GENERIC_jpeg_PATTERN,
+    GENERIC_MP4_PATTERN,
+    GENERIC_JPEG_PATTERN,
     TITLE_LINE_PATTERN,
     EPISODE_NUMBER_PATTERN,
     THUMBNAIL_NUMBER_PATTERN
@@ -42,13 +41,24 @@ class TestRenamingScript(unittest.TestCase):
     # --- Test Cases for Helper Functions ---
 
     def test_numeric_sort_key(self):
-        """Test the custom numeric sorting key."""
-        self.assertEqual(_numeric_sort_key("file.jpeg"), 0)
-        self.assertEqual(_numeric_sort_key("file (1).jpeg"), 1)
-        self.assertEqual(_numeric_sort_key("file (9).jpeg"), 9)
-        self.assertEqual(_numeric_sort_key("file (10).jpeg"), 10)
-        self.assertEqual(_numeric_sort_key("another file (100).jpeg"), 100)
-        self.assertEqual(_numeric_sort_key("video.mp4"), 0) # Should not match jpeg pattern, so default to 0
+        # No brackets: should sort first
+        self.assertEqual(_numeric_sort_key("screenshot.jpeg"), (0, "screenshot.jpeg"))
+        # With brackets: should sort after, by number
+        self.assertEqual(_numeric_sort_key("screenshot (1).jpeg"), (1, 1, "screenshot (1).jpeg"))
+        self.assertEqual(_numeric_sort_key("screenshot (5).jpeg"), (1, 5, "screenshot (5).jpeg"))
+        # Date/time for mp4s
+        self.assertEqual(
+            _numeric_sort_key("2025-01-01 10-00-00.mp4"),
+            (2, datetime(2025, 1, 1, 10, 0, 0), "2025-01-01 10-00-00.mp4")
+        )
+        # Fallback for other files
+        self.assertEqual(_numeric_sort_key("randomfile.txt"), (3, "randomfile.txt"))
+
+    def test_jpeg_rename_order(self):
+        # Simulate the order after sorting
+        files = ["screenshot (1).jpeg", "screenshot (5).jpeg", "screenshot.jpeg"]
+        sorted_files = sorted(files, key=_numeric_sort_key)
+        self.assertEqual(sorted_files, ["screenshot.jpeg", "screenshot (1).jpeg", "screenshot (5).jpeg"])
 
     # --- Test Cases for get_series_title ---
 
@@ -85,7 +95,7 @@ class TestRenamingScript(unittest.TestCase):
         os.makedirs(series_path, exist_ok=True)
         with open(os.path.join(series_path, "index.txt"), "w") as f:
             f.write("title: \n")
-        with self.assertRaises(ValueError) as cm: # <--- CHANGE THIS
+        with self.assertRaises(ValueError) as cm:
             get_series_title(series_path)
         self.assertIn("No valid 'title: ...' line", str(cm.exception))
 
@@ -146,13 +156,15 @@ class TestRenamingScript(unittest.TestCase):
 
         processed_path = os.path.join(series_path, "Processed")
         self.assertTrue(os.path.exists(processed_path))
+        # Sorted order: Screenshot.jpeg, Screenshot (1).jpeg, Screenshot (2).jpeg
+        # MP4s sorted by datetime: 10-00-00, 10-30-00, 11-00-00
+        # So pairs: (10-00-00, Screenshot.jpeg) -> 1, (10-30-00, Screenshot (1).jpeg) -> 2, (11-00-00, Screenshot (2).jpeg) -> 3
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 1.mp4")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 1.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 2.mp4")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 2.jpeg")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 3.mp4")))
         self.assertTrue(os.path.exists(os.path.join(processed_path, "New Adventure 3.jpeg")))
-
         # Check original files are gone
         self.assertFalse(os.path.exists(os.path.join(series_path, "2025-01-01 10-00-00.mp4")))
         self.assertFalse(os.path.exists(os.path.join(series_path, "Screenshot.jpeg")))
@@ -175,7 +187,7 @@ class TestRenamingScript(unittest.TestCase):
 
         # New files to process
         open(os.path.join(series_path, "2025-02-01 09-00-00.mp4"), 'a').close()
-        open(os.path.join(series_path, "Thumb (0).jpeg"), 'a').close() # Treat as 0 for sorting
+        open(os.path.join(series_path, "Thumb.jpeg"), 'a').close() # No brackets, should be first
         open(os.path.join(series_path, "2025-02-01 09-30-00.mp4"), 'a').close()
         open(os.path.join(series_path, "Thumb (1).jpeg"), 'a').close()
 
@@ -259,17 +271,11 @@ class TestRenamingScript(unittest.TestCase):
         processed_path = os.path.join(series_path, "Processed")
         self.assertTrue(os.path.exists(processed_path))
 
-        # Check that files were renamed in the correct episode order
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 1.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 1.jpeg")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 2.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 2.jpeg")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 3.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 3.jpeg")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 4.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 4.jpeg")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 5.mp4")))
-        self.assertTrue(os.path.exists(os.path.join(processed_path, "My Thumb Test 5.jpeg")))
+        # Sorted order: Screenshot.jpeg, Screenshot (1).jpeg, Screenshot (2).jpeg, Screenshot (3).jpeg, Screenshot (10).jpeg
+        # MP4s sorted by datetime, so pairs are 1-5
+        for i in range(1, 6):
+            self.assertTrue(os.path.exists(os.path.join(processed_path, f"My Thumb Test {i}.mp4")))
+            self.assertTrue(os.path.exists(os.path.join(processed_path, f"My Thumb Test {i}.jpeg")))
 
 
     # --- Test Cases for main function ---
