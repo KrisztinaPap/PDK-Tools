@@ -10,7 +10,7 @@ By leveraging a structured folder system and an `index.txt` file, this script in
 
 ## The Problem It Solves
 
-Imagine recording 10-20 video clips and taking a matching number of screenshots every single day. Each file comes with a generic, often date-based, filename (e.g., `2025-07-05 18-00-00.mp4`, `Screenshot (1).jpg`). Manually renaming these to `[Series Title] [Episode Number].mp4` and `[Series Title] [Episode Number].jpg` is incredibly repetitive and prone to errors. This script eliminates that manual effort, freeing up valuable time for content creation.
+Imagine recording 8 hour streams, as 30-minute clips, 5 days a week. That's 8 x 2 x 5 = 80 clips per week. Each file comes with a generic, date-based filename (e.g., `2025-07-05 18-00-00.mp4`, `Screenshot (1).jpg`). You also generate a thumbnail with the unique episode number for each clip. Updating the one number is fairly quick, but you still need to rename each thumbnail file either when saving, or afterwards. Manually renaming all these files to `[Series Title] [Episode Number].mp4` and `[Series Title] [Episode Number].jpg` is incredibly repetitive and prone to errors. This script eliminates that manual effort, freeing up valuable time for content creation.
 
 ## Features
 
