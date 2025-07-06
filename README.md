@@ -138,7 +138,7 @@ This project includes a robust test suite using Python's `unittest` framework to
 
 - **File Handling:** Ensuring correct renaming, movement to the "Processed" folder, and proper handling of file counts (e.g., mismatched pairs, no files).
 
-- **Edge Cases:** Verifying behavior with missing index.txt files, empty processed folders, and challenging thumbnail naming patterns (e.g., numeric sorting).
+- **Edge Cases:** Verifying behavior with missing `index.txt` files, empty processed folders, and challenging thumbnail naming patterns (e.g., numeric sorting).
 
 
 ## Debugging
