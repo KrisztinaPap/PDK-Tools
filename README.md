@@ -1,4 +1,4 @@
-# RenameFiles - Content Series Renamer
+# rename_files.py - Content Series Renamer
 
 ## Overview
 

@@ -65,19 +65,20 @@ def rename_files_in_series(series_path):
         print(f"DEBUG: Failed to get series title for {series_path}: {e}. Skipping series.")
         return
 
-    processed_folder_path = os.path.join(series_path, "Processed")
-    print(f"DEBUG: Processed folder path set to: {processed_folder_path}")
-
-    if not os.path.exists(processed_folder_path):
-        print(f"DEBUG: Processed folder does not exist. Attempting to create: {processed_folder_path}")
-        try:
-            os.makedirs(processed_folder_path)
-            print(f"DEBUG: Successfully created processed folder: {processed_folder_path}")
-        except OSError as e:
-            print(f"DEBUG: Failed to create processed folder {processed_folder_path}: {e}. Skipping series.")
-            return
-    else:
-        print(f"DEBUG: Processed folder already exists: {processed_folder_path}")
+    # --- THIS BLOCK WAS MOVED FROM HERE ---
+    # processed_folder_path = os.path.join(series_path, "Processed")
+    # print(f"DEBUG: Processed folder path set to: {processed_folder_path}")
+    # if not os.path.exists(processed_folder_path):
+    #     print(f"DEBUG: Processed folder does not exist. Attempting to create: {processed_folder_path}")
+    #     try:
+    #         os.makedirs(processed_folder_path)
+    #         print(f"DEBUG: Successfully created processed folder: {processed_folder_path}")
+    #     except OSError as e:
+    #         print(f"DEBUG: Failed to create processed folder {processed_folder_path}: {e}. Skipping series.")
+    #         return
+    # else:
+    #     print(f"DEBUG: Processed folder already exists: {processed_folder_path}")
+    # --- END OF MOVED BLOCK COMMENT ---
 
     mp4_files_to_process = []
     jpg_files_to_process = []
@@ -101,6 +102,24 @@ def rename_files_in_series(series_path):
     elif len(mp4_files_to_process) != len(jpg_files_to_process):
         print(f"DEBUG: Mismatch in number of MP4 ({len(mp4_files_to_process)}) and JPG ({len(jpg_files_to_process)}) files. Skipping series {series_path}.")
         return
+
+    # --- NEW, CORRECT LOCATION FOR PROCESSED FOLDER CREATION ---
+    # The 'Processed' folder should only be created if we have files to process
+    # and they match in count.
+    processed_folder_path = os.path.join(series_path, "Processed")
+    print(f"DEBUG: Processed folder path set to: {processed_folder_path}")
+
+    if not os.path.exists(processed_folder_path):
+        print(f"DEBUG: Processed folder does not exist. Attempting to create: {processed_folder_path}")
+        try:
+            os.makedirs(processed_folder_path)
+            print(f"DEBUG: Successfully created processed folder: {processed_folder_path}")
+        except OSError as e:
+            print(f"DEBUG: Failed to create processed folder {processed_folder_path}: {e}. Skipping series.")
+            return
+    else:
+        print(f"DEBUG: Processed folder already exists: {processed_folder_path}")
+    # --- END NEW LOCATION ---
 
     # Apply custom sorting for both MP4 and JPG files
     mp4_files_to_process.sort(key=_numeric_sort_key)
