@@ -130,13 +130,26 @@ For each `Series_Name` folder, the script performs the following steps:
 └── rename_script.py
 ```
 
+## Test Coverage
+
+This project includes a robust test suite using Python's `unittest` framework to ensure reliability and prevent regressions. It covers:
+
+- **Core Functions:** Validating series title extraction and next episode number generation.
+
+- **File Handling:** Ensuring correct renaming, movement to the "Processed" folder, and proper handling of file counts (e.g., mismatched pairs, no files).
+
+- **Edge Cases:** Verifying behavior with missing index.txt files, empty processed folders, and challenging thumbnail naming patterns (e.g., numeric sorting).
+
+
 ## Debugging
 
 The script includes extensive `DEBUG` print statements that will output to your terminal as it runs. These messages provide real-time feedback on what the script is doing, which files it's finding, and any issues it encounters (like missing `index.txt` files or mismatched file counts). This is invaluable for understanding its behavior and troubleshooting problems.
 
+
 ## Contributions
 
 Contributions, issues, and feature requests are welcome! Feel free to open an issue or submit a pull request.
+
 
 ## License
 
