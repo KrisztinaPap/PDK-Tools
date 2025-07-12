@@ -1,33 +1,21 @@
-# Content Series Renamer (`rename_files.py`)
-
-## Overview
-
-This Python script automates the renaming and organization of video recordings (`.mp4`) and their thumbnail images (`.jpeg`) for content series. It efficiently processes bulk recordings, ensures consistent naming, and organizes outputs for streamlined content management.
-
----
+# Content Series Renamer
+Automate the renaming and organization of video recordings (.mp4) and their thumbnail images (.jpeg) for your content series. This repo contains two Python applications—`rename_files.py` (original) and `rename_files_2.py` (improved)—plus a test suite for each.
 
 ## Features
-
-- **Automated Pair Renaming:** Pairs `.mp4` and `.jpeg` files, renaming them with the series title and sequential episode numbers.
-- **Strict Pair Matching:** Only processes folders where the number of `.mp4` and `.jpeg` files match exactly. Skips folders otherwise.
-- **Intelligent Sorting:** Uses custom sorting to correctly align videos and thumbnails, handling patterns like `Screenshot (1).jpeg` and date-named videos.
-- **Episode Numbering:** Determines the next episode number by scanning the `Processed` folder for previously renamed files, incrementing from the highest found.
-- **Folder Management:** Moves renamed files into a `Processed` subfolder within each series directory, keeping originals clean.
-- **Hierarchical Scanning:** Recursively scans a root directory, traversing through game, then series directories, and processes every series folder found.
-- **Title Extraction:** Reads the series title from an `index.txt` file (must include a line: `title: ...`). Skips folders if missing or malformed.
-
----
+- Automated Pair Renaming: Pairs `.mp4` and `.jpeg` files, renaming them with the series title and sequential episode numbers.
+- Strict Pair Matching: Only processes folders where the number of `.mp4` and `.jpeg` files match.
+- Intelligent Sorting: Handles both bracketed (e.g., `Screenshot (1).jpeg`) and number-at-end (e.g., `foo 2.jpeg`) thumbnail naming conventions.
+- Episode Numbering: Determines the next episode number by scanning the `Processed` folder for previously renamed files.
+- Folder Management: Moves renamed files into a `Processed` subfolder within each series directory.
+- Recursive Scanning: Recursively processes all series folders under your content root.
+- Title Extraction: Reads the series title from an `index.txt` file (`title: ...` required).
 
 ## How It Works
-
-1. **Traversal:** Starting from the root directory (where the script is located), the script recursively searches for leaf directories (series folders).
-2. **Validation:** In each series folder, checks for an `index.txt` file and matching counts of `.mp4` and `.jpeg` files.
-3. **Sorting:** Sorts video and thumbnail files using a custom numeric and datetime-aware order to ensure proper pairing.
-4. **Renaming:** Renames and moves each video and its paired thumbnail to the `Processed` folder, using the format:  
-   `[Series Title] [Episode Number].mp4` and `[Series Title] [Episode Number].jpeg`
-5. **Error Handling:** Provides debug output for missing titles, mismatched file counts, and I/O errors, skipping problematic folders.
-
----
+1. Traversal: Recursively scans for series folders (leaf directories).
+2. Validation: Checks for `index.txt` and matching counts of `.mp4` and `.jpeg` files.
+3. Sorting: Sorts files using custom logic for correct pairing.
+4. Renaming: Renames and moves each pair to the `Processed` folder as `[Series Title] [Episode Number].mp4` and `.jpeg`.
+5. Error Handling: Skips folders with missing/malformed `index.txt`, mismatched file counts, or file errors, with debug output.
 
 ## Folder Structure
 
@@ -38,35 +26,35 @@ This Python script automates the renaming and organization of video recordings (
 │       ├── index.txt
 │       ├── [video and thumbnail files]
 │       └── Processed/
-└── rename_files.py
+├── rename_files.py
+├── rename_files_2.py
+├── test_rename_files.py
+└── test_rename_files_2.py
 ```
 
----
-
 ## Setup & Usage
+1. Clone the Repository:
 
-1. **Clone the Repository**
-    ```bash
-    git clone https://github.com/KrisztinaPap/PDK-Tools.git
-    cd PDK-Tools
-    ```
-2. **Organize Your Content:**  
-   Place `rename_files.py` in the root of your content folder (above all games/series directories).
-3. **Prepare `index.txt`:**  
-   Each series folder must have an `index.txt` file with a line such as:
-    ```
-    title: My Awesome Series
-    ```
-4. **Run the Script**
-    ```bash
-    python rename_files.py
-    ```
+```
+git clone https://github.com/KrisztinaPap/PDK-Tools.git
+cd PDK-Tools
+```
 
----
+2. Organize Your Content:
+Place the script in your content root. Each series folder must have an `index.txt` with a line like:
+`title: My Awesome Series`
 
-## Example: Before & After
+3. Run the Script:
 
-**Before:**
+```
+python rename_files_2.py
+```
+
+(Or use `rename_files.py` for the original version.)
+
+## Example
+### Before:
+
 ```
 /MyContent/
 └── Game/
@@ -75,7 +63,9 @@ This Python script automates the renaming and organization of video recordings (
         ├── 2025-07-05 10-30-00.mp4
         ├── Screenshot (1).jpeg
 ```
-**After:**
+
+### After:
+
 ```
 /MyContent/
 └── Game/
@@ -86,40 +76,23 @@ This Python script automates the renaming and organization of video recordings (
             ├── My Awesome Series 1.jpeg
 ```
 
----
-
 ## Testing
+- Full test suites for both versions using Python’s `unittest`.
+- Covers sorting, pairing, title extraction, episode numbering, edge cases, and file operations.
+- Run all tests with:
 
-- A complete test suite (`test_rename_files.py`) is included, using Python’s `unittest` framework.
-- The tests cover:
-    - Sorting and pairing logic
-    - Title extraction and validation
-    - Episode number generation
-    - Handling of edge cases (e.g. missing files, mismatched pairs, empty or malformed `index.txt`)
-    - Actual file renaming and movement in temporary directories
-    - Main entrypoint’s recursive directory traversal
-- Debug output is suppressed during tests for clarity.
-
-Run all tests with:
-```bash
+```
 python -m unittest test_rename_files.py
+python -m unittest test_rename_files_2.py
 ```
 
----
 
 ## Debugging
-
-- The script prints `DEBUG` statements for real-time progress and troubleshooting.
-- Skips folders with missing/malformed `index.txt`, mismatched file counts, or file errors.
-
----
+- Prints `DEBUG` statements for progress and troubleshooting.
+- Skips problematic folders gracefully.
 
 ## Contributing
-
-Contributions, issues, and feature requests are welcome. Please open an issue or pull request.
-
----
+This is a personal project and I am not seeking external contributions at this time. Thanks for your interest!
 
 ## License
-
-This project is licensed under the [MIT License](LICENSE).
+MIT License
